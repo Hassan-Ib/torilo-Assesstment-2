@@ -27,7 +27,7 @@ const getPosts = async ({
 
 export default getPosts;
 
-export const getPost = async (id: string) => {
+export const getPost = async (id: string): Promise<IPost> => {
   const url = `${BASE_URL}post/${id}`;
   const res = await fetch(url, {
     method: "GET",

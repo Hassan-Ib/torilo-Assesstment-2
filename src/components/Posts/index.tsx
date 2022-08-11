@@ -4,16 +4,26 @@ import PostColumnBody from "./Post.ColumnBody";
 import usePosts from "../../hooks/usePosts";
 import Column from "./Column";
 import { useDashboardCTX } from "../../context/DashboardCtx";
-
-// type Props = {
-//   // handleShowUserDetails: (id: string) => void;
-// };
+import Loader from "../Loader";
 
 const Index = () => {
-  const { posts, isError } = usePosts();
+  const { posts, isError, isLoading } = usePosts();
   const { handleShowPostDetails } = useDashboardCTX();
+  if (isLoading) {
+    return (
+      <section className="pr-2 text-[11px] rounded-md h-[24rem] w-[40rem] mb-4">
+        <div className="px-4 bg-[#EDEEEF] pb-2 rounded-md h-full flex justify-center items-center">
+          <Loader />
+        </div>
+      </section>
+    );
+  }
   if (isError || !posts) {
-    return <div>Error</div>;
+    return (
+      <div className="pr-2 text-[11px] rounded-md h-[24rem] w-[40rem] mb-4">
+        Error...
+      </div>
+    );
   }
 
   return (

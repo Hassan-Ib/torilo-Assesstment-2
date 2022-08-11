@@ -1,7 +1,5 @@
-import React from "react";
-import { posts } from "../Mock/posts";
-import { useQuery } from "@tanstack/react-query";
-import { IPosts } from "../types/post";
+import React, { useEffect } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import getPosts from "../api/getPost";
 const LIMIT = 10;
 
@@ -14,16 +12,27 @@ const LIMIT = 10;
 
 const fetchPosts = () => getPosts({ limit: LIMIT });
 
-type Props = {
-  page: number;
-};
-
-const usePosts = () => {
-  const { data, isLoading, isError, error } = useQuery(["post"], fetchPosts);
+const usePosts = (page: number = 0) => {
+  const queryClient = useQueryClient();
+  const { data, isLoading, isError, error } = useQuery(
+    ["post", { page }],
+    fetchPosts
+  );
   console.log(error);
   const [currenPage, setcurrentPage] = React.useState<number>(1);
 
-  if (isError || !data) {
+  const updateCurrentPage = (page: number) => {
+    setcurrentPage(page);
+  };
+
+  useEffect(() => {
+    try {
+      queryClient.fetchQuery(["users", { page: currenPage }], () =>
+        getPosts({ limit: LIMIT, page: currenPage })
+      );
+    } catch (error) {}
+  }, [currenPage, queryClient]);
+  if (isError) {
     return {
       isError: true,
       isLoading: false,
@@ -31,14 +40,10 @@ const usePosts = () => {
       data: null,
     };
   }
-  const updatePageDetails = (page: number) => {
-    setcurrentPage(page);
-  };
-  const pageDetails = {
-    page: currenPage,
-    totalPages: Math.floor(data.total / LIMIT),
-  };
-  return { posts: data, isLoading, isError, pageDetails, updatePageDetails };
+
+  console.log("useUser", "isLoading", isLoading, "isError", isError);
+
+  return { posts: data, isLoading, isError, error, updateCurrentPage };
 };
 
 export default usePosts;

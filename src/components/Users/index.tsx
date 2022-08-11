@@ -10,11 +10,12 @@ import { useDashboardCTX } from "../../context/DashboardCtx";
 const Index = () => {
   const { users, isLoading, isError } = useUsers();
   const { handleShowUserDetails } = useDashboardCTX();
+  console.log("loading", isLoading);
 
   if (isLoading) {
     return (
       <section className="pr-2 text-[11px] rounded-md min-w-[40rem] h-[24rem] overflow-y-scroll scrollbar mb-4">
-        <div className="px-4 bg-[#EDEEEF] h-full pb-2 rounded-md">
+        <div className="px-4 bg-[#EDEEEF] h-full pb-2 rounded-md flex items-center justify-center">
           <Loading />
         </div>
       </section>
