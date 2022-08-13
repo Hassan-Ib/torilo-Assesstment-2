@@ -1,43 +1,44 @@
-import React, { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { IUsers } from "../Mock/users";
-// import getPosts from "../api/getPost";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import getUsers from "../api/getUser";
 
 const LIMIT: number = 10;
 
-const fetchUser = (): Promise<IUsers> => getUsers({ limit: 10, page: 0 });
+const useUsers = () => {
+  const [currentPage, setcurrentPage] = React.useState<number>(1);
 
-const useUsers = (page: number = 0) => {
-  const queryClient = useQueryClient();
+  const fetchUsers = (limit: number, page: number) => getUsers({ limit, page });
+
   const { data, error, isLoading, isError } = useQuery(
-    ["users", { page }],
-    fetchUser
+    ["users", currentPage - 1],
+    () => fetchUsers(LIMIT, currentPage - 1),
+    { keepPreviousData: true }
   );
 
-  const [currenPage, setcurrentPage] = React.useState<number>(1);
-
+  console.log(currentPage, data?.page);
+  const nextPage = () => {
+    setcurrentPage((prev) => prev + 1);
+  };
+  const previousPage = () => {
+    setcurrentPage((prev) => prev - 1);
+  };
   const updateCurrentPage = (page: number) => {
+    console.log("upadateCurrentPage", page);
     setcurrentPage(page);
   };
-  useEffect(() => {
-    try {
-      queryClient.fetchQuery(["users", { page: currenPage }], () =>
-        getUsers({ limit: LIMIT, page: currenPage })
-      );
-    } catch (error) {}
-  }, [currenPage, queryClient]);
+  const pageDetails = {
+    totalPages: 3,
+    currentPage: currentPage,
+    limit: LIMIT,
+    changePage: updateCurrentPage,
+    nextPage: nextPage,
+    previousPage: previousPage,
+  };
 
-  if (error) {
-    return {
-      isError: true,
-      isLoading: false,
-      error,
-      data: null,
-    };
+  if (data) {
+    pageDetails.totalPages = Math.ceil(data.total / LIMIT);
   }
-  console.log("useUser", "isLoading", isLoading, "isError", isError);
-  return { users: data, error, isLoading, isError, updateCurrentPage };
+  return { users: data, error, isLoading, isError, pageDetails };
 };
 
 export default useUsers;

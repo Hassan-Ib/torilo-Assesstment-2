@@ -1,30 +1,53 @@
 import { useState } from "react";
 type PaginateProps = {
-  total: number;
-  setState?: (page: number) => void;
+  totalPages: number;
+  changePage: (page: number) => void;
+  currentPage: number;
+  nextPage: () => void;
+  previousPage?: () => void;
 };
-const usePagenate = ({ total }: PaginateProps) => {
-  const [page, setPage] = useState<number>(1);
+const usePagenate = ({
+  totalPages,
+  changePage,
+  currentPage: page,
+  nextPage,
+  previousPage,
+}: PaginateProps) => {
   const [consecuentPages, setConsecuentPages] = useState([1, 2, 3]);
+
+  console.log("consecuentPages", consecuentPages);
+  // handlePreviuos page
   const handlePrevious = () => {
     if (page === consecuentPages[0] && page > 1) {
       setConsecuentPages((prev) => {
         return prev.map((item) => item - 1);
       });
     }
-    setPage(page - 1);
+    if (page && page > 1) {
+      previousPage && previousPage();
+    }
   };
+
+  // handleNext page
   const handleNext = () => {
-    if (page === consecuentPages[consecuentPages.length - 1] && page < total) {
+    if (
+      page === consecuentPages[consecuentPages.length - 1] &&
+      page < totalPages
+    ) {
       setConsecuentPages((prev) => {
         return prev.map((item) => item + 1);
       });
     }
-    setPage(page + 1);
+    if (page && page < totalPages) {
+      nextPage && nextPage();
+    }
   };
+
+  // handlePage page
   const handlePage = (page: number) => {
-    setPage(page);
+    changePage && changePage(page);
   };
+
   return { page, handlePrevious, handleNext, handlePage, consecuentPages };
 };
 

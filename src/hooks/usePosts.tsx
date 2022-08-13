@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import getPosts from "../api/getPost";
 const LIMIT = 10;
 
@@ -10,40 +10,38 @@ const LIMIT = 10;
 //     }, 4000);
 //   });
 
-const fetchPosts = () => getPosts({ limit: LIMIT });
-
-const usePosts = (page: number = 0) => {
-  const queryClient = useQueryClient();
+const usePosts = () => {
+  const [currentPage, setcurrentPage] = React.useState<number>(1);
   const { data, isLoading, isError, error } = useQuery(
-    ["post", { page }],
-    fetchPosts
+    ["post", { currentPage }],
+    () => getPosts({ limit: LIMIT, page: currentPage - 1 }),
+    { keepPreviousData: true }
   );
-  console.log(error);
-  const [currenPage, setcurrentPage] = React.useState<number>(1);
 
+  console.log("post", currentPage, data?.page);
+  const nextPage = () => {
+    setcurrentPage((prev) => prev + 1);
+  };
+  const previousPage = () => {
+    setcurrentPage((prev) => prev - 1);
+  };
   const updateCurrentPage = (page: number) => {
+    console.log("upadateCurrentPage", page);
     setcurrentPage(page);
   };
+  const pageDetails = {
+    totalPages: 3,
+    currentPage: currentPage,
+    limit: LIMIT,
+    changePage: updateCurrentPage,
+    nextPage: nextPage,
+    previousPage: previousPage,
+  };
 
-  useEffect(() => {
-    try {
-      queryClient.fetchQuery(["users", { page: currenPage }], () =>
-        getPosts({ limit: LIMIT, page: currenPage })
-      );
-    } catch (error) {}
-  }, [currenPage, queryClient]);
-  if (isError) {
-    return {
-      isError: true,
-      isLoading: false,
-      error,
-      data: null,
-    };
+  if (data) {
+    pageDetails.totalPages = Math.ceil(data.total / LIMIT);
   }
-
-  console.log("useUser", "isLoading", isLoading, "isError", isError);
-
-  return { posts: data, isLoading, isError, error, updateCurrentPage };
+  return { posts: data, isLoading, isError, error, pageDetails };
 };
 
 export default usePosts;

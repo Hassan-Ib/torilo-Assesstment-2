@@ -1,16 +1,20 @@
 import React from "react";
 import UserColumnHeader from "./User.ColumnHeader";
 import UserColumnBody from "./User.ColumnBody";
-import useUsers from "../../hooks/useUsers";
 import Column from "./Column";
 import Loading from "../Loader";
 import { useDashboardCTX } from "../../context/DashboardCtx";
-// import { IUser } from "../../types/user";
+import { IUserPreview, IUsers } from "../../types/user";
 
-const Index = () => {
-  const { users, isLoading, isError } = useUsers();
+type Props = {
+  users: IUsers | undefined;
+  isLoading: boolean;
+  isError: boolean;
+};
+
+const Index = ({ users, isLoading, isError }: Props) => {
   const { handleShowUserDetails } = useDashboardCTX();
-  console.log("loading", isLoading);
+  console.log("loading", isLoading, "user data", users);
 
   if (isLoading) {
     return (
@@ -32,7 +36,7 @@ const Index = () => {
         <table className="border-collapse border-spacing-0">
           <UserColumnHeader />
           <UserColumnBody>
-            {users.data.map((user) => {
+            {users.data.map((user: IUserPreview) => {
               return (
                 <Column
                   handleShowUserDetails={handleShowUserDetails}

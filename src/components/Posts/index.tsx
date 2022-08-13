@@ -1,13 +1,17 @@
 import React from "react";
 import PostColumnHeader from "./Post.ColumnHeader";
 import PostColumnBody from "./Post.ColumnBody";
-import usePosts from "../../hooks/usePosts";
 import Column from "./Column";
 import { useDashboardCTX } from "../../context/DashboardCtx";
 import Loader from "../Loader";
+import type { IPostPreview, IPosts } from "../../types/post";
 
-const Index = () => {
-  const { posts, isError, isLoading } = usePosts();
+type Props = {
+  posts: IPosts | undefined;
+  isLoading: boolean;
+  isError: boolean;
+};
+const Index = ({ posts, isLoading, isError }: Props) => {
   const { handleShowPostDetails } = useDashboardCTX();
   if (isLoading) {
     return (
@@ -32,7 +36,7 @@ const Index = () => {
         <table className="border-collapse border-spacing-0">
           <PostColumnHeader />
           <PostColumnBody>
-            {posts.data.map((post) => {
+            {posts.data.map((post: IPostPreview) => {
               return (
                 <Column
                   handleShowUserDetails={handleShowPostDetails}
