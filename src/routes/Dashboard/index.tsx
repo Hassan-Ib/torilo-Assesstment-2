@@ -50,21 +50,10 @@ const Details = () => {
 
   let Paginate: React.ReactNode | null = null;
   if (location.pathname.includes("/posts")) {
-    // console.log("rendering posts pagination");
-    // console.log(postsPageination);
     Paginate = postsPageination;
   } else {
-    // console.log("rendering users pagination");
-    // console.log(usersPagination);
     Paginate = usersPagination;
   }
-  // React.useEffect(() => {
-  //   if (location.pathname.includes("/posts")) {
-  //     userPageDetails.changePage(1);
-  //   } else {
-  //     postPageDetails.changePage(1);
-  //   }
-  // }, [location, userPageDetails, postPageDetails]);
 
   return (
     <DashboardCTX>
