@@ -15,7 +15,7 @@ const useUsers = () => {
     { keepPreviousData: true }
   );
 
-  console.log(currentPage, data?.page);
+  // console.log(currentPage, data?.page);
   const nextPage = () => {
     setcurrentPage((prev) => prev + 1);
   };
@@ -23,7 +23,7 @@ const useUsers = () => {
     setcurrentPage((prev) => prev - 1);
   };
   const updateCurrentPage = (page: number) => {
-    console.log("upadateCurrentPage", page);
+    // console.log("upadateCurrentPage", page);
     setcurrentPage(page);
   };
   const pageDetails = {

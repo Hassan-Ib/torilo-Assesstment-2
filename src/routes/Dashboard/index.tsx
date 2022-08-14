@@ -16,6 +16,21 @@ import Pagination from "../../components/Pagination";
 type Props = {};
 
 const Index = (props: Props) => {
+  return (
+    <section className="flex ">
+      <SideBar />
+      <section className="flex-1 flex flex-col ">
+        <Header />
+        <ContentStat />
+        <Details />
+      </section>
+    </section>
+  );
+};
+
+export default Index;
+
+const Details = () => {
   const location = useLocation();
   const {
     users,
@@ -30,22 +45,33 @@ const Index = (props: Props) => {
     pageDetails: postPageDetails,
   } = usePosts();
 
-  const postsPageination = <Pagination {...postPageDetails} />;
-  const usersPagination = <Pagination {...userPageDetails} />;
+  const postsPageination = <Pagination key={"posts"} {...postPageDetails} />;
+  const usersPagination = <Pagination key={"users"} {...userPageDetails} />;
 
-  const Paginate = location.pathname.includes("/posts")
-    ? postsPageination
-    : usersPagination;
+  let Paginate: React.ReactNode | null = null;
+  if (location.pathname.includes("/posts")) {
+    // console.log("rendering posts pagination");
+    // console.log(postsPageination);
+    Paginate = postsPageination;
+  } else {
+    // console.log("rendering users pagination");
+    // console.log(usersPagination);
+    Paginate = usersPagination;
+  }
+  // React.useEffect(() => {
+  //   if (location.pathname.includes("/posts")) {
+  //     userPageDetails.changePage(1);
+  //   } else {
+  //     postPageDetails.changePage(1);
+  //   }
+  // }, [location, userPageDetails, postPageDetails]);
 
   return (
-    <section className="flex ">
-      <SideBar />
-      <section className="flex-1 flex flex-col ">
-        <Header />
-        <ContentStat />
-        <DashboardCTX>
-          <section className="px-10 text-sm grid grid-cols-3">
-            <div className=" col-span-2 justify-self-start self-end mb-4">
+    <DashboardCTX>
+      <section className="grid grid-cols-3 px-10">
+        <section className=" col-span-2">
+          <section className="text-sm ">
+            <div className="">
               <TabControl />
               <Routes>
                 <Route
@@ -70,22 +96,19 @@ const Index = (props: Props) => {
                 />
               </Routes>
             </div>
-            <div className=" flex justify-end ">
-              {location.pathname === "/dashboard" ? (
-                <UserDetails />
-              ) : (
-                <PostDetails />
-              )}
-            </div>
           </section>
-        </DashboardCTX>
-        {Paginate}
-        {usersPagination}
-        {postsPageination}
-        {postsPageination}
+          {Paginate}
+        </section>
+        <section>
+          <div className=" flex justify-end ">
+            {location.pathname === "/dashboard" ? (
+              <UserDetails />
+            ) : (
+              <PostDetails />
+            )}
+          </div>
+        </section>
       </section>
-    </section>
+    </DashboardCTX>
   );
 };
-
-export default Index;

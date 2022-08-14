@@ -9,7 +9,6 @@ const getUsers = async ({
   limit: number;
   page: number;
 }): Promise<IUsers> => {
-  console.log("getUsers", limit, page);
   const url = `${BASE_URL}user?limit=${limit}&page=${page}`;
   const res = await fetch(url, {
     headers: {

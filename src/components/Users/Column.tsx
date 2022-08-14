@@ -25,7 +25,7 @@ const Column = ({
         <img
           src={picture}
           alt={firstName + " " + lastName}
-          className="h-8 rounded-full"
+          className="h-9 rounded-full"
         />
       </td>
       <td className="w-20 capitalize">{title}</td>

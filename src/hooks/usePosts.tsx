@@ -18,7 +18,6 @@ const usePosts = () => {
     { keepPreviousData: true }
   );
 
-  console.log("post", currentPage, data?.page);
   const nextPage = () => {
     setcurrentPage((prev) => prev + 1);
   };
@@ -26,7 +25,7 @@ const usePosts = () => {
     setcurrentPage((prev) => prev - 1);
   };
   const updateCurrentPage = (page: number) => {
-    console.log("upadateCurrentPage", page);
+    // console.log("upadateCurrentPage", page);
     setcurrentPage(page);
   };
   const pageDetails = {

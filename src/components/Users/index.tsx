@@ -14,7 +14,7 @@ type Props = {
 
 const Index = ({ users, isLoading, isError }: Props) => {
   const { handleShowUserDetails } = useDashboardCTX();
-  console.log("loading", isLoading, "user data", users);
+  // console.log("loading", isLoading, "user data", users);
 
   if (isLoading) {
     return (
