@@ -1,10 +1,11 @@
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import getUsers from "../api/getUser";
 
 const LIMIT: number = 10;
 
 const useUsers = () => {
+  const queryClient = useQueryClient();
   const [currentPage, setcurrentPage] = React.useState<number>(1);
 
   const fetchUsers = (limit: number, page: number) => getUsers({ limit, page });
@@ -34,6 +35,12 @@ const useUsers = () => {
     nextPage: nextPage,
     previousPage: previousPage,
   };
+
+  React.useEffect(() => {
+    if (currentPage < pageDetails.totalPages) {
+      queryClient.prefetchQuery(["post", { currentPage: currentPage + 1 }]);
+    }
+  }, [currentPage, queryClient, pageDetails.totalPages]);
 
   if (data) {
     pageDetails.totalPages = Math.ceil(data.total / LIMIT);

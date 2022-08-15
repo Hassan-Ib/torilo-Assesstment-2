@@ -16,7 +16,23 @@ import Pagination from "../../components/Pagination";
 type Props = {};
 
 const Index = (props: Props) => {
+  return (
+    <section className="flex ">
+      <SideBar />
+      <section className="flex-1 flex flex-col ">
+        <Header />
+        <ContentStat />
+        <TableDetails />
+      </section>
+    </section>
+  );
+};
+
+export default Index;
+
+const TableDetails = () => {
   const location = useLocation();
+
   const {
     users,
     isLoading: isUsersLoading,
@@ -30,62 +46,52 @@ const Index = (props: Props) => {
     pageDetails: postPageDetails,
   } = usePosts();
 
-  const postsPageination = <Pagination {...postPageDetails} />;
-  const usersPagination = <Pagination {...userPageDetails} />;
+  const postsPageination = <Pagination key="posts" {...postPageDetails} />;
+  const usersPagination = <Pagination key="users" {...userPageDetails} />;
 
   const Paginate = location.pathname.includes("/posts")
     ? postsPageination
     : usersPagination;
 
   return (
-    <section className="flex ">
-      <SideBar />
-      <section className="flex-1 flex flex-col ">
-        <Header />
-        <ContentStat />
-        <DashboardCTX>
-          <section className="px-10 text-sm grid grid-cols-3">
-            <div className=" col-span-2 justify-self-start self-end mb-4">
-              <TabControl />
-              <Routes>
-                <Route
-                  index
-                  element={
-                    <User
-                      users={users}
-                      isLoading={isUsersLoading}
-                      isError={isUsersError}
-                    />
-                  }
-                />
-                <Route
-                  path="posts"
-                  element={
-                    <Post
-                      posts={posts}
-                      isLoading={isPostsLoading}
-                      isError={isPostsError}
-                    />
-                  }
-                />
-              </Routes>
-            </div>
-            <div className=" flex justify-end ">
-              {location.pathname === "/dashboard" ? (
-                <UserDetails />
-              ) : (
-                <PostDetails />
-              )}
-            </div>
-          </section>
-        </DashboardCTX>
-        {Paginate}
-        {usersPagination}
-        {postsPageination}
-        {postsPageination}
-      </section>
-    </section>
+    <>
+      <DashboardCTX>
+        <section className="px-10 text-sm grid grid-cols-3">
+          <div className=" col-span-2 justify-self-start self-end mb-4">
+            <TabControl />
+            <Routes>
+              <Route
+                index
+                element={
+                  <User
+                    users={users}
+                    isLoading={isUsersLoading}
+                    isError={isUsersError}
+                  />
+                }
+              />
+              <Route
+                path="posts"
+                element={
+                  <Post
+                    posts={posts}
+                    isLoading={isPostsLoading}
+                    isError={isPostsError}
+                  />
+                }
+              />
+            </Routes>
+          </div>
+          <div className=" flex justify-end ">
+            {location.pathname === "/dashboard" ? (
+              <UserDetails />
+            ) : (
+              <PostDetails />
+            )}
+          </div>
+        </section>
+      </DashboardCTX>
+      {Paginate}
+    </>
   );
 };
-
-export default Index;

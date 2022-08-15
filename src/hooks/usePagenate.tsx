@@ -13,7 +13,11 @@ const usePagenate = ({
   nextPage,
   previousPage,
 }: PaginateProps) => {
-  const [consecuentPages, setConsecuentPages] = useState([1, 2, 3]);
+  const [consecuentPages, setConsecuentPages] = useState(() =>
+    Array(3)
+      .fill(0)
+      .map((_, i) => page + i)
+  );
 
   console.log("consecuentPages", consecuentPages);
   // handlePreviuos page

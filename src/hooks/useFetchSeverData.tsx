@@ -1,25 +1,23 @@
 import React from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import getPosts from "../api/getPost";
-const LIMIT = 10;
 
-// const fetchPosts = () =>
-//   new Promise<IPosts>((resolve, _) => {
-//     setTimeout(() => {
-//       resolve(posts());
-//     }, 4000);
-//   });
+const LIMIT: number = 10;
+type FetchSeverDataProps = {
+  fetchMethod: (limit: number, page: number) => Promise<any>;
+  name: string;
+};
 
-const usePosts = () => {
+function useFetchSeverData({ fetchMethod, name }: FetchSeverDataProps) {
   const queryClient = useQueryClient();
   const [currentPage, setcurrentPage] = React.useState<number>(1);
-  const { data, isLoading, isError, error } = useQuery(
-    ["post", { currentPage }],
-    () => getPosts({ limit: LIMIT, page: currentPage - 1 }),
+
+  const { data, error, isLoading, isError } = useQuery(
+    [name, currentPage - 1],
+    async () => fetchMethod(LIMIT, currentPage - 1),
     { keepPreviousData: true }
   );
 
-  console.log("post", currentPage, data?.page);
+  console.log(currentPage, data?.page);
   const nextPage = () => {
     setcurrentPage((prev) => prev + 1);
   };
@@ -39,7 +37,6 @@ const usePosts = () => {
     previousPage: previousPage,
   };
 
-  // prefectch next page with queryClient
   React.useEffect(() => {
     if (currentPage < pageDetails.totalPages) {
       queryClient.prefetchQuery(["post", { currentPage: currentPage + 1 }]);
@@ -49,7 +46,7 @@ const usePosts = () => {
   if (data) {
     pageDetails.totalPages = Math.ceil(data.total / LIMIT);
   }
-  return { posts: data, isLoading, isError, error, pageDetails };
-};
+  return { users: data, error, isLoading, isError, pageDetails };
+}
 
-export default usePosts;
+export default useFetchSeverData;
