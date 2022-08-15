@@ -42,7 +42,10 @@ const usePosts = () => {
   // prefectch next page with queryClient
   React.useEffect(() => {
     if (currentPage < pageDetails.totalPages) {
-      queryClient.prefetchQuery(["post", { currentPage: currentPage + 1 }]);
+      queryClient.prefetchQuery(
+        ["post", { currentPage: currentPage + 1 }],
+        () => getPosts({ limit: LIMIT, page: currentPage })
+      );
     }
   }, [currentPage, queryClient, pageDetails.totalPages]);
 

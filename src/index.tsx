@@ -4,8 +4,14 @@ import App from "./App";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
-
-const queryClient = new QueryClient();
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: Infinity,
+    },
+  },
+});
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -14,7 +20,10 @@ const root = ReactDOM.createRoot(
 root.render(
   <QueryClientProvider client={queryClient}>
     <BrowserRouter>
-      <App />
+      <>
+        <ReactQueryDevtools initialIsOpen={false} />
+        <App />
+      </>
     </BrowserRouter>
   </QueryClientProvider>
 );

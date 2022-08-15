@@ -11,7 +11,7 @@ const useUsers = () => {
   const fetchUsers = (limit: number, page: number) => getUsers({ limit, page });
 
   const { data, error, isLoading, isError } = useQuery(
-    ["users", currentPage - 1],
+    ["users", { currentPage }],
     () => fetchUsers(LIMIT, currentPage - 1),
     { keepPreviousData: true }
   );
@@ -38,7 +38,10 @@ const useUsers = () => {
 
   React.useEffect(() => {
     if (currentPage < pageDetails.totalPages) {
-      queryClient.prefetchQuery(["post", { currentPage: currentPage + 1 }]);
+      queryClient.prefetchQuery(
+        ["users", { currentPage: currentPage + 1 }],
+        () => fetchUsers(LIMIT, currentPage)
+      );
     }
   }, [currentPage, queryClient, pageDetails.totalPages]);
 
